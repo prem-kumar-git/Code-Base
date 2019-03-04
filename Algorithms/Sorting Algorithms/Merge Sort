@@ -1,0 +1,55 @@
+public class MyClass {
+    public static void mergeSort(int[] a){
+        int n = a.length;
+        if(n < 2)
+            return;
+        int mid = n/2;
+        int[] leftArr = new int[mid];
+        int[] rightArr = new int[n-mid];
+        for(int i=0; i<mid; i++){
+            leftArr[i] = a[i];
+        }
+        for(int i=mid; i<n; i++){
+            rightArr[i-mid] = a[i];
+        }
+        mergeSort(leftArr);
+        mergeSort(rightArr);
+        merge(leftArr,rightArr,a);
+    }
+    public static void merge(int[] l, int[] r, int[] a){
+        int i=0, j=0, k=0;
+        while(i<l.length && j<r.length){
+            if(l[i] < r[j]){
+                a[k] = l[i];
+                i++;
+            }
+            else{
+                a[k] = r[j];
+                j++;
+            }
+            k++;
+        }
+        while(i<l.length){
+            a[k] = l[i];
+            i++;
+            k++;
+        }
+        while(j<r.length){
+            a[k] = r[j];
+            j++;
+            k++;
+        }
+    }
+    public static void printArr(int[] a){
+        for(int i=0; i<a.length; i++){
+            System.out.print(a[i] + " ");
+        }
+    }
+    public static void main(String args[]) {
+        int[] x = {7,4,6,2,8,1,3,5};
+        printArr(x);
+        mergeSort(x);
+        System.out.println();
+        printArr(x);
+    }
+}
