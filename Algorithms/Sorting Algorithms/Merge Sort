@@ -47,9 +47,11 @@ public class MyClass {
     }
     public static void main(String args[]) {
         int[] x = {7,4,6,2,8,1,3,5};
+        System.out.print("Array before sorting - ");
         printArr(x);
         mergeSort(x);
         System.out.println();
+        System.out.print("Array after sorting - ");
         printArr(x);
     }
 }
