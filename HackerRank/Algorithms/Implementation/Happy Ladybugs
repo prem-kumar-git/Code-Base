@@ -1,0 +1,87 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+public class Solution {
+
+    static String happyLadybugs(String b) {
+        String nb = b.replaceAll("_", "");
+        String str = "YES";
+        if(b.length() == nb.length()){
+            if(nb.length() == 1)
+                str = "NO";
+            else{
+                for(int i=0; i<nb.length(); i++){
+                    if(i == 0){
+                        if(nb.charAt(i) != nb.charAt(i+1)){
+                            str = "NO";
+                            break;
+                        }
+                    }
+                    else if(i == nb.length()-1){
+                        if(nb.charAt(i) != nb.charAt(i-1)){
+                            str = "NO";
+                            break;
+                        }
+                    }
+                    else{
+                        if(nb.charAt(i) != nb.charAt(i+1) && nb.charAt(i) != nb.charAt(i-1)){
+                            str = "NO";
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            char[] cArr = nb.toCharArray();
+            Arrays.sort(cArr);
+            if(cArr.length == 1)
+                str = "NO";
+            else{
+                for(int j=0; j<cArr.length; j++){
+                    if(j == 0){
+                        if(cArr[j] != cArr[j+1]){
+                            str = "NO";
+                            break;
+                        }
+                    }
+                    else if(j == cArr.length-1){
+                        if(cArr[j] != cArr[j-1]){
+                            str = "NO";
+                            break;
+                        }
+                    }
+                    else{
+                        if(cArr[j] != cArr[j+1] && cArr[j] != cArr[j-1]){
+                            str = "NO";
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return str;
+    }
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+        int g = scanner.nextInt();
+        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+        for (int gItr = 0; gItr < g; gItr++) {
+            int n = scanner.nextInt();
+            scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+            String b = scanner.nextLine();
+            String result = happyLadybugs(b);
+            bufferedWriter.write(result);
+            bufferedWriter.newLine();
+        }
+        bufferedWriter.close();
+        scanner.close();
+    }
+}
