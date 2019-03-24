@@ -1,0 +1,52 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+public class Solution {
+
+    static int[] cutTheSticks(int[] arr) {
+        int arrSum = 0;
+        String str = "";
+        for(int i=0; i<arr.length; i++){
+            arrSum += arr[i];
+        }
+        while(arrSum > 0){
+            Arrays.sort(arr);
+            int tempCount = 0;
+            int currSmall = 0;
+            for(int i=0; i<arr.length; i++){
+                if(arr[i] == 0)
+                    continue;
+                else{
+                    currSmall = (tempCount == 0) ? arr[i] : currSmall;
+                    arr[i] = arr[i] - currSmall;
+                    arrSum = arrSum - currSmall;
+                    tempCount++;
+                }
+            }
+            str += String.valueOf(tempCount) + "-";
+        }
+        String strArr[] = str.split("-");
+        int[] retArr = new int[strArr.length];
+        for(int i=0; i<strArr.length; i++){
+            retArr[i] = Integer.parseInt(strArr[i]);
+        }
+        return retArr;
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int[] arr = new int[n];
+        for(int arr_i = 0; arr_i < n; arr_i++){
+            arr[arr_i] = in.nextInt();
+        }
+        int[] result = cutTheSticks(arr);
+        for (int i = 0; i < result.length; i++) {
+            System.out.print(result[i] + (i != result.length - 1 ? "\n" : ""));
+        }
+        System.out.println("");
+        in.close();
+    }
+}
