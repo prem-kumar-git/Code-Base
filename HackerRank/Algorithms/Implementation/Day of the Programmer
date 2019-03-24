@@ -1,0 +1,27 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+public class Solution {
+
+    static String solve(int year){
+        int total7MonthsDays = 215, feb = 0;
+        if(year < 2018 && year % 4 == 0)
+            feb = 29;
+        else if(year > 2018 && (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0)))
+            feb = 29;
+        else if(year == 1918)
+            feb = 15;
+        else
+            feb = 28;
+        return String.valueOf(256 - (total7MonthsDays + feb)) + ".09." + year;
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int year = in.nextInt();
+        String result = solve(year);
+        System.out.println(result);
+    }
+}
