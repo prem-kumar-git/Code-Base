@@ -1,0 +1,23 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+public class Solution {
+    public static void main(String args[] ) throws Exception {
+        Scanner scan = new Scanner(System.in);
+        int n = scan.nextInt();
+        int k = scan.nextInt();
+        int[] priceArray = new int[n];
+        for(int i=0; i<n; i++){
+            priceArray[i] = scan.nextInt();
+        }
+        int charged = scan.nextInt();
+        int actual = 0;
+        for(int i=0; i<n; i++){
+            if(i != k)
+                actual += priceArray[i];
+        }
+        System.out.println((charged == actual/2)? "Bon Appetit" : (charged - actual/2));
+    }
+}
