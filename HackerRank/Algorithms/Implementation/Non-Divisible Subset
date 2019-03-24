@@ -1,0 +1,53 @@
+import java.io.*;
+import java.math.*;
+import java.text.*;
+import java.util.*;
+import java.util.regex.*;
+public class Solution {
+
+    static int nonDivisibleSubset(int k, int[] a){
+        int b[] = new int[k+1];
+        int count = 0;
+        for(int i=0; i<a.length; i++){
+            b[a[i]%k] += 1;
+        }
+        int cond = (k%2==0) ? (k/2) : (k/2)+1;
+        for(int j=0; j<cond; j++){
+            if(b[0]!=0 && j==0)
+               count++;
+            else
+            count += (b[j]>b[k-j]) ? b[j] : b[k-j];
+        }
+        if(k%2 == 0)
+            count += 1;
+        return count;
+    }
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        String[] nk = scanner.nextLine().split(" ");
+
+        int n = Integer.parseInt(nk[0].trim());
+
+        int k = Integer.parseInt(nk[1].trim());
+
+        int[] S = new int[n];
+
+        String[] SItems = scanner.nextLine().split(" ");
+
+        for (int SItr = 0; SItr < n; SItr++) {
+            int SItem = Integer.parseInt(SItems[SItr].trim());
+            S[SItr] = SItem;
+        }
+
+        int result = nonDivisibleSubset(k, S);
+
+        bufferedWriter.write(String.valueOf(result));
+        bufferedWriter.newLine();
+
+        bufferedWriter.close();
+    }
+}
