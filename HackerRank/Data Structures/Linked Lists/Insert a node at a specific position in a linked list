@@ -1,0 +1,18 @@
+Node InsertNth(Node head, int dt, int position) {
+    Node newHead = head;
+    Node newNode = new Node();
+    newNode.data = dt;
+    if(position == 0){
+        newNode.next = newHead;
+        newHead = newNode;
+    }
+    else{
+        Node insertNode = newHead;
+        for(int i=1; i<position; i++){
+            insertNode = insertNode.next;
+        }
+        newNode.next = insertNode.next;
+        insertNode.next = newNode;
+    }
+    return newHead;
+}
