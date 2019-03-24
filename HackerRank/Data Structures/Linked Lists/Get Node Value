@@ -1,0 +1,18 @@
+    static int getNode(SinglyLinkedListNode head, int positionFromTail) {
+        int data;
+        if(head.next == null){
+            data = head.data;
+            head.data = 0;
+            return data;
+        }
+        data = getNode(head.next, positionFromTail);
+        if(head.next.data == positionFromTail){
+            head.data = head.next.data;
+            return data;
+        }
+        else{
+            data = head.data;
+            head.data = head.next.data + 1;
+            return data;
+        }
+    }
