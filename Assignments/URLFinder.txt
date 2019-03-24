@@ -1,3 +1,7 @@
+*************************************************************Problem Statement************************************************************
+	Develop a tool which should be able to read JS files, And retrieve the end points or URL’s available in the JS files or integrated 	into the JS files. Usually JS files have hidden url’s so the tool should be able to read and retrieve the URLs automatically.
+*************************************************************Problem Statement************************************************************
+*/
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
