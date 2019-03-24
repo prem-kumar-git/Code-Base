@@ -1,0 +1,25 @@
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+public class HelloWorld {
+
+    public static void main(String[] args) throws IOException {
+		// get the JS files in which URL's need to be searched
+        Scanner sc = new Scanner(new File("urlFile.js"));
+		// build a pattern to match all possible url format
+		Pattern patt = Pattern.compile("((((f|ht)tps?:)?//)?([a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+(:[^ @:]+)?@)?((([a-zA-Z0-9\\-]{1,255}|xn--[a-zA-Z0-9\\-]+)\\.)+(xn--[a-zA-Z0-9\\-]+|[a-zA-Z]{2,6}|\\d{1,3})|localhost|(%[0-9a-fA-F]{2})+|[0-9]+)(:[0-9]{1,5})?([/\\?][^ \\s/]*)*)");
+        // Iterate over each word in JS file and match with the pattern
+		while(sc.hasNext()){
+			String word = sc.next();
+			Matcher m = patt.matcher(word);
+			while (m.find()) {
+			// Starting position of the URL text
+			int start = m.start(0);
+			// Ending position of the URL text
+			int end = m.end(0);
+			// Print whatever matched.
+			System.out.println(word.substring(start, end));
+			}
+        }
+    }
+}
