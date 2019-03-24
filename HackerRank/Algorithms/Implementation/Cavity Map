@@ -1,0 +1,37 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+public class Solution {
+
+    public static void main(String[] args) throws IOException {
+        Scanner scan = new Scanner(System.in);
+        int n = scan.nextInt();
+        char[][] grid = new char[n][n];
+        for(int i=0; i<n; i++){
+            String str = scan.next();
+            for(int j=0; j<str.length(); j++){
+                grid[i][j] = str.charAt(j);
+            }
+        }
+        for(int i=1; i<grid.length-1; i++){
+            for(int j=1; j<grid.length-1; j++){
+                if(Integer.valueOf(grid[i][j]) > Integer.valueOf(grid[i][j-1]) 
+                   && Integer.valueOf(grid[i][j]) > Integer.valueOf(grid[i][j+1]) 
+                   && Integer.valueOf(grid[i][j]) > Integer.valueOf(grid[i-1][j]) 
+                   && Integer.valueOf(grid[i][j]) > Integer.valueOf(grid[i+1][j])){
+                    grid[i][j] = 'X';
+                }
+            }
+        }
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                System.out.print(grid[i][j]);
+            }
+            System.out.println();
+        }
+    }
+}
