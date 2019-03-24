@@ -1,0 +1,75 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+public class Solution {
+
+    static int queensAttack(int n, int k, int y, int x, int[][] obstacles) {
+        int attackPoints = 0;
+        Map<String,Integer> pointMap = new HashMap<String,Integer>();
+        pointMap.put("West", x-1);
+        pointMap.put("East", n-x);
+        pointMap.put("South", y-1);
+        pointMap.put("North", n-y);
+        pointMap.put("North-West", Math.min(n-y,x-1));
+        pointMap.put("South-West", Math.min(y-1,x-1));
+        pointMap.put("North-East", Math.min(n-y,n-x));
+        pointMap.put("South-East", Math.min(y-1,n-x));
+        for(int i=0; i<k; i++){
+            if(obstacles[i][0] == y && obstacles[i][1] < x){
+                if(pointMap.get("West") > ((x-1) - obstacles[i][1]))
+                        pointMap.put("West", ((x-1) - obstacles[i][1]));
+            }
+            else if(obstacles[i][0] == y && obstacles[i][1] > x){
+                if(pointMap.get("East") > (obstacles[i][1] - (x+1)))
+                        pointMap.put("East", (obstacles[i][1] - (x+1)));
+            }
+            else if(obstacles[i][1] == x && obstacles[i][0] < y){
+                if(pointMap.get("South") > ((y-1) - obstacles[i][0]))
+                        pointMap.put("South", ((y-1) - obstacles[i][0]));
+            }
+            else if(obstacles[i][1] == x && obstacles[i][0] > y){
+                if(pointMap.get("North") > (obstacles[i][0] - (y+1)))
+                        pointMap.put("North", (obstacles[i][0] - (y+1)));
+            }
+            else if(obstacles[i][0] > y && obstacles[i][1] < x){
+                if(pointMap.get("North-West") > (obstacles[i][0]-(y+1)) && (obstacles[i][0]-y == x-obstacles[i][1]))
+                        pointMap.put("North-West", (obstacles[i][0]-(y+1)));
+            }
+            else if(obstacles[i][0] < y && obstacles[i][1] < x){
+                if(pointMap.get("South-West") > ((y-1)-obstacles[i][0]) && (y-obstacles[i][0] == x-obstacles[i][1]))
+                        pointMap.put("South-West", ((y-1)-obstacles[i][0]));
+            }
+            else if(obstacles[i][1] > x && obstacles[i][0] > y){
+                if(pointMap.get("North-East") > (obstacles[i][0]-(y+1)) && (obstacles[i][0]-y == obstacles[i][1]-x))
+                        pointMap.put("North-East", (obstacles[i][0]-(y+1)));
+            }
+            else if(obstacles[i][1] > x && obstacles[i][0] < y){
+                if(pointMap.get("South-East") > ((y-1)-obstacles[i][0]) && (y-obstacles[i][0] == obstacles[i][1]-x))
+                        pointMap.put("South-East", ((y-1)-obstacles[i][0]));
+            }
+        }
+        for(Integer in : pointMap.values()){
+            attackPoints += in;
+        }
+        return attackPoints;
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int k = in.nextInt();
+        int r_q = in.nextInt();
+        int c_q = in.nextInt();
+        int[][] obstacles = new int[k][2];
+        for(int obstacles_i = 0; obstacles_i < k; obstacles_i++){
+            for(int obstacles_j = 0; obstacles_j < 2; obstacles_j++){
+                obstacles[obstacles_i][obstacles_j] = in.nextInt();
+            }
+        }
+        int result = queensAttack(n, k, r_q, c_q, obstacles);
+        System.out.println(result);
+        in.close();
+    }
+}
