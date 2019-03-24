@@ -1,0 +1,15 @@
+static DoublyLinkedListNode reverse(DoublyLinkedListNode head) {
+    DoublyLinkedListNode temp = head;
+    if(head == null || head.next == null)
+        return head;
+    DoublyLinkedListNode n = head;
+    while(n != null){
+        DoublyLinkedListNode l = (n.prev != null) ? n.prev : null;
+        DoublyLinkedListNode r = (n.next != null) ? n.next : null;
+        n.prev = r;
+        n.next = l;
+        temp = n;
+        n = n.prev;
+    }
+    return temp;
+}
