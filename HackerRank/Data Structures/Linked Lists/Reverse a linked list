@@ -1,0 +1,14 @@
+Node Reverse(Node head) {
+    if(head == null || head.next == null)
+        return head;
+    Node prevNode = null;
+    Node currNode = head;
+    Node nxtNode = null;
+    while(currNode != null){
+        nxtNode = currNode.next;
+        currNode.next = prevNode;
+        prevNode = currNode;
+        currNode = nxtNode;
+    }
+    return prevNode;
+}
