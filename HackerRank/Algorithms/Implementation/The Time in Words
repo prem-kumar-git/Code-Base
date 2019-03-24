@@ -1,0 +1,85 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+public class Solution {
+
+    static String timeInWords(int h, int m) {
+        String str = "";
+        Map<Integer,String> digitMap = new HashMap<Integer,String>();
+        digitMap.put(1,"one");
+        digitMap.put(2,"two");
+        digitMap.put(3,"three");
+        digitMap.put(4,"four");
+        digitMap.put(5,"five");
+        digitMap.put(6,"six");
+        digitMap.put(7,"seven");
+        digitMap.put(8,"eight");
+        digitMap.put(9,"nine");
+        digitMap.put(10,"ten");
+        digitMap.put(11,"eleven");
+        digitMap.put(12,"twelve");
+        digitMap.put(13,"thirteen");
+        digitMap.put(14,"fourteen");
+        digitMap.put(15,"quarter");
+        digitMap.put(16,"sixteen");
+        digitMap.put(17,"seventeen");
+        digitMap.put(18,"eighteen");
+        digitMap.put(19,"nineteen");
+        digitMap.put(20,"twenty");
+        digitMap.put(21,"twenty one");
+        digitMap.put(22,"twenty two");
+        digitMap.put(23,"twenty three");
+        digitMap.put(24,"twenty four");
+        digitMap.put(25,"twenty five");
+        digitMap.put(26,"twenty six");
+        digitMap.put(27,"twenty seven");
+        digitMap.put(28,"twenty eight");
+        digitMap.put(29,"twenty nine");
+        digitMap.put(30,"half");
+        if(m == 0)
+            str = digitMap.get(h) + " o' clock";
+        else if(m <= 30){
+            if(m == 1)
+                str = digitMap.get(m) + " minute past " + digitMap.get(h);
+            else if(m == 15 || m == 30)
+                str = digitMap.get(m) + " past " + digitMap.get(h);
+            else
+                str = digitMap.get(m) + " minutes past " + digitMap.get(h);
+        }
+        else{
+            m = 60 - m;
+            if(m == 1)
+                str = digitMap.get(m) + " minute to " + digitMap.get(h+1);
+            else if(m == 15)
+                str = digitMap.get(m) + " to " + digitMap.get(h+1);
+            else
+                str = digitMap.get(m) + " minutes to " + digitMap.get(h+1);
+        }
+        return str;
+    }
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        int h = scanner.nextInt();
+        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+
+        int m = scanner.nextInt();
+        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+
+        String result = timeInWords(h, m);
+
+        bufferedWriter.write(result);
+        bufferedWriter.newLine();
+
+        bufferedWriter.close();
+
+        scanner.close();
+    }
+}
