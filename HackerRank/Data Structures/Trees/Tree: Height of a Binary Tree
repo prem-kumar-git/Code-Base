@@ -1,0 +1,7 @@
+static int height(Node root) {
+    if(root == null)
+        return -1;
+    int leftHeignt = 1 + height(root.left);
+    int rightHeight = 1 + height(root.right);
+    return (leftHeignt > rightHeight) ? leftHeignt : rightHeight;
+}
