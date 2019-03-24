@@ -1,0 +1,18 @@
+Node mergeLists(Node headA, Node headB) {
+    if(headA == null && headB == null)
+        return null;
+    else if(headB == null)
+        return headA;
+    else if(headA == null)
+        return headB;
+    if(headA.data <= headB.data)
+        headA.next = mergeLists(headA.next, headB);
+    else{
+        Node newNode = headB;
+        headB = headB.next;
+        newNode.next = headA;
+        headA = newNode;
+        headA.next = mergeLists(headA.next, headB);
+    }
+    return headA;
+}
