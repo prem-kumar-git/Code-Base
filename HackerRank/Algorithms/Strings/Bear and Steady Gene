@@ -1,0 +1,70 @@
+********************Find Problem Statement here - https://www.hackerrank.com/challenges/bear-and-steady-gene/problem
+
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+public class Solution {
+    public static boolean balanced(int N, Map<Character, Integer> map) {
+    if (map.get('A') <= N && map.get('C') <= N && map.get('G') <= N
+            && map.get('T') <= N)
+        return true;
+
+    return false;
+}
+
+public static int steadyGene(int N, String s) {
+    Map<Character, Integer> map = new HashMap<Character, Integer>();
+    map.put('A', 0);
+    map.put('C', 0);
+    map.put('G', 0);
+    map.put('T', 0);
+
+    for (int i = 0; i < s.length(); ++i) {
+        map.put(s.charAt(i), map.get(s.charAt(i)) + 1);
+    }
+
+    int min = Integer.MAX_VALUE;
+
+    int i = 0;
+    int j = 0;
+
+    while (i < s.length() && j < s.length()) {
+        if (!balanced(N, map)) {
+            map.put(s.charAt(j), map.get(s.charAt(j)) - 1);
+            //System.out.println(map);
+            j++;
+        } else {
+            min = Math.min(min, j - i);
+            map.put(s.charAt(i), map.get(s.charAt(i)) + 1);
+            //System.out.println(map);
+            i++;
+        }
+    }
+
+    return min;
+}
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        int n = scanner.nextInt();
+        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+        int N = n/4;
+        String gene = scanner.nextLine();
+
+        int result = steadyGene(N,gene);
+
+        bufferedWriter.write(String.valueOf(result));
+        bufferedWriter.newLine();
+
+        bufferedWriter.close();
+
+        scanner.close();
+    }
+}
