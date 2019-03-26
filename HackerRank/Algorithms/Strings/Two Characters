@@ -1,0 +1,54 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+public class Solution {
+    
+    static int twoCharaters(String s){
+        Set<Character> char_set = new HashSet<Character>();
+        for (int i = 0; i < s.length(); i++)
+            char_set.add(s.charAt(i));
+        Character[] char_arr = char_set.toArray(new Character[char_set.size()]);
+        int max = 0;
+        for (int j = 0; j < char_arr.length - 1; j++) {
+            for (int k = j + 1; k < char_arr.length; k++) {
+                String pattern = "([^" + char_arr[j] + char_arr[k] + "])";
+                String trimmedStr = s.replaceAll(pattern, "");
+                if (isTwoCharacter(trimmedStr) && trimmedStr.length() > max) {
+                    max = trimmedStr.length();
+                }
+            }
+        }
+        return max;
+    }
+    static boolean isTwoCharacter(String s) {
+        for (int i = 0; i < s.length() - 1; i++) {
+            if (s.charAt(i) == s.charAt(i+1))
+                return false;
+        }
+        return true;
+    }
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        int l = scanner.nextInt();
+        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+
+        String s = scanner.nextLine();
+
+        int result = twoCharaters(s);
+
+        bufferedWriter.write(String.valueOf(result));
+        bufferedWriter.newLine();
+
+        bufferedWriter.close();
+
+        scanner.close();
+    }
+}
