@@ -1,0 +1,54 @@
+********************Find Problem Statement here - https://www.hackerrank.com/challenges/sherlock-and-valid-string/problem
+
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+public class Solution {
+
+    static String isValid(String s) {
+        String str = "YES";
+        int[] cArr = new int[26];
+        for(int i=0; i<s.length(); i++){
+            cArr[s.charAt(i)-97]++;
+        }
+        Arrays.sort(cArr);
+        int max = cArr[25];
+        Boolean flag = true;
+        for(int i=25; i>=0; i--){
+            if(cArr[i] != 0){
+                if(flag && cArr[i] == max)
+                    continue;
+                else if(flag && cArr[i] != max){
+                    flag = false;
+                    continue;
+                }
+                else{
+                    str = "NO";
+                    break;
+                }
+            }
+        }
+        return str;
+    }
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        String s = scanner.nextLine();
+
+        String result = isValid(s);
+
+        bufferedWriter.write(result);
+        bufferedWriter.newLine();
+
+        bufferedWriter.close();
+
+        scanner.close();
+    }
+}
