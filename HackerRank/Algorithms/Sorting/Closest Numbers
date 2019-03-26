@@ -1,0 +1,83 @@
+********************Find Problem Statement here - https://www.hackerrank.com/challenges/closest-numbers/problem
+
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+public class Solution {
+
+    static int[] closestNumbers(int[] a) {
+        qs(0,a.length-1,a);
+        List<Integer> digList = new ArrayList<Integer>();
+        int min = Integer.MAX_VALUE;
+        for(int i=0; i<a.length-1; i++){
+            if((a[i+1]-a[i]) < min){
+                digList.clear();
+                digList.add(a[i]);
+                digList.add(a[i+1]);
+                min = a[i+1]-a[i];
+            }
+            else if((a[i+1]-a[i]) == min){
+                digList.add(a[i]);
+                digList.add(a[i+1]);
+            }
+        }
+        int[] diffArr = new int[digList.size()];
+        int indx = 0;
+        for(Integer in : digList){
+            diffArr[indx] = in;
+            indx++;
+        }
+        return diffArr;
+    }
+    static void qs(int start, int end, int[] a){
+        if(start < end){
+            int pIndx = partition(start,end,a);
+            qs(start,pIndx-1,a);
+            qs(pIndx+1,end,a);
+        }
+    }
+    static int partition(int start, int end, int[] a){
+        int pivot = a[end], temp, pIndx = start;
+        for(int i=start; i<end; i++){
+            if(a[i] <= pivot){
+                temp = a[i];
+                a[i] = a[pIndx];
+                a[pIndx] = temp;
+                pIndx++;
+            }
+        }
+        temp = a[pIndx];
+        a[pIndx] = pivot;
+        a[end] = temp;
+        return pIndx;
+    }
+
+    private static final Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+        int n = scanner.nextInt();
+        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+        int[] arr = new int[n];
+        String[] arrItems = scanner.nextLine().split(" ");
+        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+        for (int i = 0; i < n; i++) {
+            int arrItem = Integer.parseInt(arrItems[i]);
+            arr[i] = arrItem;
+        }
+        int[] result = closestNumbers(arr);
+        for (int i = 0; i < result.length; i++) {
+            bufferedWriter.write(String.valueOf(result[i]));
+
+            if (i != result.length - 1) {
+                bufferedWriter.write(" ");
+            }
+        }
+        bufferedWriter.newLine();
+        bufferedWriter.close();
+        scanner.close();
+    }
+}
