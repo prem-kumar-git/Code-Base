@@ -5,7 +5,8 @@ Create a checkbox ‘Primary__c’ on contact. When a contact is created with �
 should give an error.
 
 *************************************************************Solution********************************************************************
-ANS: Interviewer will ask in such a way that only insert scenario will be clear but the candidate has to identify all other scenarios like update & undelete.
+ANS: Interviewer will ask in such a way that only insert scenario will be clear but the candidate has to identify all other scenarios 
+like update & undelete.
 
 Trigger Code***************************
 
