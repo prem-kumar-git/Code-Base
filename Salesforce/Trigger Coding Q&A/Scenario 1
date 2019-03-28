@@ -1,0 +1,95 @@
+*****************************************************Problem Statement*******************************************************************
+Create a checkbox ‘Primary__c’ on contact. When a contact is created with ‘Primary__c’ checked and same value for ‘LeadSource’
+(standard field on contact) for an account, it should give an error. For example if there is an account A1 and it has a contact C1 with 
+‘Primary__c’ as checked and ‘LeadSource’ as ‘Web’, then if C2 is created with ‘Primary__c’ checked and with same ‘LeadSource’ then it 
+should give an error.
+
+*************************************************************Solution********************************************************************
+ANS: Interviewer will ask in such a way that only insert scenario will be clear but the candidate has to identify all other scenarios like update & undelete.
+
+Trigger Code***************************
+
+trigger ContactDataSource on Contact (before insert, before update, after undelete) {
+    if(trigger.isBefore){
+        if(trigger.isInsert){
+            ConLdSourceHandler.invokeInsert(trigger.new);
+        }
+        if(trigger.isupdate){
+            ConLdSourceHandler.invokeUpdate(trigger.oldMap, trigger.newMap);
+        }
+        if(trigger.isunDelete){
+            ConLdSourceHandler.invokeInsert(trigger.new);
+        }
+    }
+}
+
+Trigger Handler Code*******************************
+
+public class ConLdSourceHandler {
+    public static void invokeInsert(List<Contact> conList){
+        COnLdSourceHelper.doInsert(conList);
+    }
+    public static void invokeUpdate(Map<Id,Contact> oMap, Map<Id,Contact> nMap){
+        COnLdSourceHelper.doUpdate(oMap,nMap);
+    }
+    public static void invokeUndelete(List<Contact> conList){
+        COnLdSourceHelper.doInsert(conList);
+    }
+}
+
+Trigger Helper Code**************************
+
+public class COnLdSourceHelper {
+    public static void doInsert(List<Contact> conList){
+        Map<Id,List<Contact>> accConMap = new Map<Id,List<Contact>>();
+        for(Contact con : [Select Id, LeadSource,AccountId, Primary__c From Contact Where Primary__c != NUll]){
+            if(!accConMap.containsKey(con.AccountId)){
+                accConMap.put(con.AccountId, new List<Contact>{con});
+            }
+            else{
+                List<Contact> cList = accConMap.get(con.AccountId);
+                cList.add(con);
+                accConMap.put(con.AccountId,cList);
+            }
+        }
+        if(!conList.isEmpty()){
+            for(Contact tCon : conList){
+                if(!accConMap.isEmpty() && accConMap.get(tCon.accountId) != null){
+                    if(!accConMap.get(tCOn.AccountId).isEmpty()){
+                        for(Contact aCon : accConMap.get(tCOn.AccountId)){
+                            if(tCon.Primary__c==true && (aCon.LeadSource==tCon.LeadSource))
+                                tCon.addError('Primary Contact with this lead source already exist');
+                        }
+                    }
+                }
+            }
+        }
+    }
+    public static void doUpdate(Map<Id,Contact> oMap, Map<Id,Contact> nMap){
+        Map<Id,List<Contact>> accConMap = new Map<Id,List<Contact>>();
+        for(Contact con : [Select Id, LeadSource,AccountId, Primary__c From Contact Where Primary__c != NUll]){
+            if(!accConMap.containsKey(con.AccountId)){
+                accConMap.put(con.AccountId, new List<Contact>{con});
+            }
+            else{
+                List<Contact> cList = accConMap.get(con.AccountId);
+                cList.add(con);
+                accConMap.put(con.AccountId,cList);
+            }
+        }   
+        if(!nMap.isEmpty()){
+            for(Contact tCon : nMap.values()){
+                if(!accConMap.isEmpty()){
+                    if(!accConMap.get(tCOn.AccountId).isEmpty()){
+                        for(Contact aCon : accConMap.get(tCOn.AccountId)){
+                            if((tCon.LeadSource != oMap.get(tCon.Id).LeadSource) || (tCon.Primary__c != oMap.get(tCon.Id).Primary__c)){
+                                if(tCon.Primary__c==true && (aCon.LeadSource==tCon.LeadSource))
+                                    tCon.addError('Primary Contact with this lead source already exist');
+                            }                    
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
