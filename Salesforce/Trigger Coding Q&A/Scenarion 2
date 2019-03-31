@@ -16,13 +16,19 @@ duplicate records can be checked and prevented.
 4) For before insert, before update and after undelete, check for the duplicate records and give appropriate errors.
 5) In trigger, extract the fields to check for matching from custom setting record and check for duplicates and show required error.
 
+Custom Setting Record for Lead****************************
+Name : LeadDupCheckTriggerRecord	
+enabled : Checked
+Trigger Name : LeadDupCheckTrigger	
+Trigger Handler : LeadDupCheckTriggerHandler
+Matching Fields: FirstName,LastName,Email
 
-Trigger Code***************************
+Trigger Code**********************************************
 trigger LeadDupCheckTrigger on Lead (before insert, before update, after undelete) {
 	LeadDupCheckTriggerHandler.handleTrigger('LeadDupCheckTrigger');
 }
 
-Trigger Handler Code*******************************
+Trigger Handler Code**************************************
 /**
 * Handler Class to route to different helper methods on different trigger events for Lead object.
 */
