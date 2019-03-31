@@ -1,0 +1,157 @@
+*****************************************************Problem Statement*******************************************************************
+Implement a dynamic dupe checker(duplicate checker) for lead. Making it dynamic meaning, administrator has the flexibility to set what all
+configurable fileds are considered as criteria for duplicate lead record for example dupe check fields may be first name, last name & email 
+or it can be last name & email. It should also restrict if the incoming lead having configurable fields for dupe check matches any contact
+records as well.
+
+*************************************************************Solution********************************************************************
+ANS: Interviewer will ask in such a way that only insert scenario will be clear but the candidate has to identify all other scenarios 
+like update & undelete. We can also implement batch class if more number of records are there and we are not sure if set filters in SOQL 
+queries may lead to retrieval of more than 50,000 records.
+
+
+Trigger Code***************************
+trigger LeadDupCheckTrigger on Lead (before insert, before update, after undelete) {
+	LeadDupCheckTriggerHandler.handleTrigger('LeadDupCheckTrigger');
+}
+
+Trigger Handler Code*******************************
+/**
+* Handler Class to route to different helper methods on different trigger events for Lead object.
+*/
+public class LeadDupCheckTriggerHandler {
+    /**
+    * Method to route to different helper methods on different trigger events for Lead object.
+    */
+	public static void handleTrigger(String triggerName){
+        Trigger__c triggerInfo = TriggerUtils.getTriggerInfo(triggerName);
+        if(triggerInfo != null){
+            if(trigger.isBefore){
+                if(trigger.isInsert){
+                    LeadDupCheckTriggerHelper.dupCheckOnInsert(trigger.new,triggerInfo);
+                }
+                if(trigger.isUpdate){
+                    LeadDupCheckTriggerHelper.dupCheckOnUpdate((Map<Id,Lead>)trigger.newMap,triggerInfo);
+                }
+            }
+            if(trigger.isAfter){
+                if(trigger.isUndelete)
+                    LeadDupCheckTriggerHelper.dupCheckOnInsert(trigger.new,triggerInfo);
+            }
+        }
+    }
+}
+
+Trigger Helper Code**************************
+/**
+* Helper Class to check duplicate lead records on different trigger events for Lead object.
+*/
+public class LeadDupCheckTriggerHelper {
+    //Maps to store field api names of the objects
+    public static Map<String, Schema.SObjectField> leadFieldMap = Schema.getGlobalDescribe().get('Lead').getDescribe().fields.getMap();
+    public static Map<String, Schema.SObjectField> accFieldConMap = Schema.getGlobalDescribe().get('Contact').getDescribe().fields.getMap();
+    
+    /**
+     * Method to check duplicate lead records on insert.
+    */
+	public static void dupCheckOnInsert(List<Lead> leadList, Trigger__c tInstance){
+        if(!leadList.isEMpty()){
+        	checkDuplicates(leadList,tInstance);
+        }
+    }
+    /**
+     * Method to check duplicate lead records on update.
+    */
+    public static void dupCheckOnUpdate(Map<Id,Lead> nLeadMap,Trigger__c tInstance){
+        if(!nLeadMap.values().isEMpty()){
+        	checkDuplicates(nLeadMap.values(),tInstance);
+        }
+    }
+    /**
+     * Method containing business logic to check and error out the duplicate lead records.
+    */
+    public static void checkDuplicates(List<Lead> ldList, Trigger__c tInstance){
+        //List to store field api names on which matching needs to be done. 
+        List<String> fieldApiNamesSet = tInstance.Matching_Fields__c.split(',');
+        //List to store field api names as key vs its all incoming lead field values from trigger so that filter can be applied while querying from database
+        Map<String,List<String>> fieldValueSetMap = new Map<String,List<String>>();
+        String fieldValue = '';
+        if(!fieldApiNamesSet.isEmpty()){
+            for(Lead a : ldList){
+                for(String fieldName : fieldApiNamesSet){
+                    if(leadFieldMap.containsKey(fieldName))
+                        fieldValue = (String)a.get(fieldName);
+                    if(String.isNotBlank(fieldValue)){
+                        if(!fieldValueSetMap.containsKey(fieldName))
+                            fieldValueSetMap.put(fieldName, new List<String>{fieldValue});
+                        else{
+                            List<String> existingStrList = fieldValueSetMap.get(fieldName);
+                            existingStrList.add(fieldValue);
+                            fieldValueSetMap.put(fieldName, existingStrList);
+                        }
+                    }
+                }
+            }
+        }
+        //String query to filter lead records from database
+        String query = 'Select ' + tInstance.Matching_Fields__c + ' From Lead ';
+        Integer n = fieldValueSetMap.size();
+        System.debug('n==>' + n);
+        if(!fieldValueSetMap.isEmpty()){
+            query += 'WHERE ';
+            for(String fn : fieldValueSetMap.keySet()){
+                List<String> fVal = fieldValueSetMap.get(fn);
+                if(n>1)
+                    query += fn + ' IN: fVal OR ';
+                else
+                    query += fn + ' IN: fVal';
+                n--;
+            }
+        }
+        //String query to filter contact records from database
+        String queryCon = 'Select ' + tInstance.Matching_Fields__c + ' From Contact ';
+        Integer nCon = fieldValueSetMap.size();
+        System.debug('nCon==>' + nCon);
+        System.debug('fieldValueSetMap==>' + fieldValueSetMap);
+        if(!fieldValueSetMap.isEmpty()){
+            queryCon += 'WHERE ';
+            for(String fcn : fieldValueSetMap.keySet()){
+                List<String> fcVal = fieldValueSetMap.get(fcn);
+                if(nCon>1)
+                    queryCon += fcn + ' IN: fcVal OR ';
+                else
+                    queryCon += fcn + ' IN: fcVal';
+                nCon--;
+            }
+        }
+        Set<String> matchingStrSet = new Set<String>();
+        //Query in database to get all possible lead object corresponding matching concatenated strings to be matched with incoming lead records.
+        query += ' limit 50000';
+        queryCon+= ' limit 50000';
+        for(Lead a : database.query(query)){
+            String matchingStr = '';
+            for(String fieldName : fieldApiNamesSet){
+                matchingStr += (String)a.get(fieldName);
+            }
+            matchingStrSet.add(matchingStr);
+        }
+        //Query in database to get all possible Contact corresponding matching concatenated strings to be matched with incoming lead records.
+        for(Contact c : database.query(queryCon)){
+            String matchingStr = '';
+            for(String fieldName : fieldApiNamesSet){
+                matchingStr += (String)c.get(fieldName);
+            }
+            matchingStrSet.add(matchingStr);
+        }
+        //Matching from trigger context records with existing records
+        for(Lead acc : ldList){
+            String toMatchStr = '';
+            for(String fieldName : fieldApiNamesSet){
+                toMatchStr += (String)acc.get(fieldName);
+            }
+            System.debug('toMatchStr==>' + toMatchStr);
+            if(matchingStrSet.contains(toMatchStr))
+                acc.addError('Duplicate record already exists!!');
+        }
+    }
+}
