@@ -9,8 +9,8 @@ ANS: Interviewer will ask in such a way that only insert scenario will be clear 
 like update & undelete. We can also implement batch class if more number of records are there and we are not sure if set filters in SOQL 
 queries may lead to retrieval of more than 50,000 records.
 Approach---------
-1) Create a custom setting which will have a textarea field to store configurable field's API names on basis of which duplicate records 
-can be checked and prevented.
+1) Create a custom setting which will have a textarea field to store comma separated configurable field's API names on basis of which 
+duplicate records can be checked and prevented.
 2) Create custom setting record for Lead object by varying the choice of fields to check for duplicates.
 3) Create triggers for Lead object 
 4) For before insert, before update and after undelete, check for the duplicate records and give appropriate errors.
