@@ -1,0 +1,16 @@
+********************Find Problem Statement here - https://www.interviewbit.com/problems/wave-array/
+
+public class Solution {
+    public int[] wave(int[] A) {
+        Arrays.sort(A);
+        int n = A.length;
+        n = (n%2==0) ? n : n-1;
+        int temp = 0;
+        for(int i=0; i<n; i=i+2){
+            temp = A[i];
+            A[i] = A[i+1];
+            A[i+1] = temp;
+        }
+        return A;
+    }
+}
