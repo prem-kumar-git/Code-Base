@@ -1,0 +1,23 @@
+********************Find Problem Statement here - https://www.interviewbit.com/problems/fizzbuzz/******************************************
+Given a positive integer A, return an array of strings with all the integers from 1 to N. 
+But for multiples of 3 the array should have “Fizz” instead of the number. 
+For the multiples of 5, the array should have “Buzz” instead of the number. 
+For numbers which are multiple of 3 and 5 both, the array should have “FizzBuzz” instead of the number.
+
+************************************************************Solution***********************************************************************
+public class Solution {
+    public String[] fizzBuzz(int a) {
+        String[] str = new String[a];
+        for(int A=1; A<=a; A++){
+            if(A%3 == 0 && A%5 != 0)
+                str[A-1] = "Fizz";
+            else if(A%5 == 0 && A%3 != 0)
+                str[A-1] =  "Buzz";
+            else if(A%5 == 0 && A%3 == 0)
+                str[A-1] =  "FizzBuzz";
+            else
+                str[A-1] = String.valueOf(A);
+        }
+        return str;
+    }
+}
