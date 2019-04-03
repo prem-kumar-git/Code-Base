@@ -1,0 +1,23 @@
+    
+********************Find Problem Statement here - https://www.interviewbit.com/problems/find-duplicate-in-array/***************************
+Given a read only array of n + 1 integers between 1 and n, find one number that repeats in linear time using less than O(n) space and 
+traversing the stream sequentially O(1) times.
+
+************************************************************Solution***********************************************************************
+public class Solution {
+    // DO NOT MODIFY THE LIST
+    public int repeatedNumber(final List<Integer> a) {
+        int ret = 0, sizeOld, sizeNew;
+        HashSet<Integer> uniqueSet = new HashSet();
+        for(Integer in : a){
+            sizeOld = uniqueSet.size();
+            uniqueSet.add(in);
+            sizeNew = uniqueSet.size();
+            if(sizeOld == sizeNew){
+                ret = in;
+                break;
+            }
+        }
+        return ret;
+    }
+}
