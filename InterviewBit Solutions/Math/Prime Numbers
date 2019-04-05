@@ -1,0 +1,35 @@
+********************Find Problem Statement here - https://www.interviewbit.com/problems/prime-numbers/*************************************
+Given a number N, find all prime numbers upto N ( N included ).
+Example:
+if N = 7,
+all primes till 7 = {2, 3, 5, 7}
+Make sure the returned array is sorted.
+************************************************************Solution***********************************************************************
+
+public class Solution {
+    public int[] sieve(int A) {
+        List<Integer> l = new ArrayList<Integer>();
+        int[] a = new int[A+1];
+        a[0] = 0;
+        a[1] = 0;
+        for(int i=2; i<a.length; i++){
+            a[i] = 1;
+        }
+        for(int i=2; i<=Math.sqrt(A); i++){
+            if(a[i] == 1){
+                for(int j=i; j*i<=A; j++){
+                    a[j*i] = 0;
+                }
+            }
+        }
+        for(int i =0; i<a.length; i++){
+            if(a[i] == 1)
+                l.add(i);
+        }
+        int[] ret = new int[l.size()];
+        for(int i=0; i<l.size(); i++){
+            ret[i] = l.get(i);
+        }
+        return ret;
+    }
+}
