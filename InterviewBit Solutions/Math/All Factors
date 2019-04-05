@@ -1,0 +1,25 @@
+********************Find Problem Statement here - https://www.interviewbit.com/problems/all-factors/***************************************
+Given a number N, find all factors of N.
+Make sure the returned array is sorted.
+************************************************************Solution***********************************************************************
+
+public class Solution {
+    public int[] allFactors(int A) {
+        Set<Integer> l = new HashSet<Integer>();
+        for(int i=1; i<=Math.sqrt(A); i++){
+            if(A%i == 0){
+                l.add(i);
+                l.add(A/i);
+            } 
+        }
+        l.add(A);
+        int[] a = new int[l.size()];
+        int i=0;
+        for(Integer in : l){
+            a[i] = in;
+            i++;
+        }
+        Arrays.sort(a);
+        return a;
+    }
+}
