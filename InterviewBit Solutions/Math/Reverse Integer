@@ -1,0 +1,23 @@
+********************Find Problem Statement here - https://www.interviewbit.com/problems/reverse-integer/***********************************
+Reverse digits of an integer.
+Example1:
+x = 123,
+return 321
+Example2:
+x = -123,
+return -321
+Return 0 if the result overflows and does not fit in a 32 bit signed integer
+************************************************************Solution***********************************************************************
+public class Solution {
+    public int reverse(int A) {
+        int mod = (A<0) ? -1 : 1;
+        A = (A<0) ? -A : A;
+        String s = String.valueOf(A);
+        String ss = "";
+        for(int i=s.length()-1; i>=0; i--){
+            ss += s.charAt(i);
+        }
+        long l = Long.valueOf(ss)*mod;
+        return (l > Integer.MAX_VALUE || l < Integer.MIN_VALUE) ? (int)0 : (int)l;
+    }
+}
