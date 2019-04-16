@@ -1,0 +1,46 @@
+********************Find Problem Statement here - https://www.interviewbit.com/problems/amazing-subarrays/***********************************
+You are given a string S, and you have to find all the amazing substrings of S.
+Amazing Substring is one that starts with a vowel (a, e, i, o, u, A, E, I, O, U).
+Input
+Only argument given is string S.
+Output
+Return a single integer X mod 10003, here X is number of Amazing Substrings in given string.
+Constraints
+1 <= length(S) <= 1e6
+S can have special characters
+Example
+Input
+    ABEC
+Output
+    6
+Explanation
+	Amazing substrings of given string are :
+	1. A
+	2. AB
+	3. ABE
+	4. ABEC
+	5. E
+	6. EC
+	here number of substrings are 6 and 6 % 10003 = 6.
+************************************************************Solution***********************************************************************
+public class Solution {
+    public int solve(String A) {
+        int n = 0;
+        HashSet<Character> s = new HashSet<>();
+        s.add('a');
+        s.add('e');
+        s.add('i');
+        s.add('o');
+        s.add('u');
+        s.add('A');
+        s.add('E');
+        s.add('I');
+        s.add('O');
+        s.add('U');
+        for(int i=0; i<A.length(); i++){
+            if(s.contains(A.charAt(i)))
+                n += A.length()-i;
+        }
+        return n%10003;
+    }
+}
