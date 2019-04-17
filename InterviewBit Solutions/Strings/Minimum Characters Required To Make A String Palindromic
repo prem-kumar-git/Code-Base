@@ -1,0 +1,26 @@
+********Find Problem Statement here - https://www.interviewbit.com/problems/minimum-characters-required-to-make-a-string-palindromic/*******
+You are given a string. The only operation allowed is to insert characters in the beginning of the string. How many minimum characters are 
+needed to be inserted to make the string a palindrome string
+Example:
+Input: ABC
+Output: 2
+Input: AACECAAAA
+Output: 2
+************************************************************Solution***********************************************************************
+public class Solution {
+    public static int solve(String A) {
+        int start = 0, end = 0, count = 0;
+        String copy = new StringBuilder(A).reverse().toString();
+        while (true) {
+            if (isPalindrom(copy.substring(start, end)+ A)) 
+                break;
+            end++;
+            count++;
+        }
+        return count;
+    }
+    public static boolean isPalindrom(String s) {
+        StringBuilder sb = new StringBuilder(s);
+        return sb.reverse().toString().equals(s);
+    }
+}
