@@ -1,0 +1,38 @@
+********************Find Problem Statement here - https://www.interviewbit.com/problems/roman-to-integer/**********************************
+Given a roman numeral, convert it to an integer.
+Input is guaranteed to be within the range from 1 to 3999.
+Read more details about roman numerals at Roman Numeric System
+Example :
+Input : "XIV"
+Return : 14
+Input : "XX"
+Output : 20
+************************************************************Solution***********************************************************************
+public class Solution {
+    public int romanToInt(String A) {
+        HashMap<Character,Integer> hm = new HashMap<>();
+        hm.put('I',1);
+        hm.put('V',5);
+        hm.put('X',10);
+        hm.put('L',50);
+        hm.put('C',100);
+        hm.put('D',500);
+        hm.put('M',1000);
+        int n = 0;
+        for(int i=0; i<A.length(); i++){
+            if(i>0){
+                if((A.charAt(i) == 'V' && A.charAt(i-1) == 'I') || (A.charAt(i) == 'X' && A.charAt(i-1) == 'I'))
+                    n += hm.get(A.charAt(i)) - 2;
+                else if(A.charAt(i) == 'L' && A.charAt(i-1) == 'X' || (A.charAt(i) == 'C' && A.charAt(i-1) == 'X'))
+                    n += hm.get(A.charAt(i)) - 20;
+                else if(A.charAt(i) == 'D' && A.charAt(i-1) == 'C' || (A.charAt(i) == 'M' && A.charAt(i-1) == 'C'))
+                    n += hm.get(A.charAt(i)) - 200;
+                else
+                    n += hm.get(A.charAt(i));
+            }
+            else
+                n += hm.get(A.charAt(i));
+        }
+        return n;
+    }
+}
