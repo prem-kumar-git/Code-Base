@@ -34,9 +34,7 @@ Solution with O(n) complexity
 public class Solution {
     // DO NOT MODIFY THE ARGUMENTS WITH "final" PREFIX. IT IS READ ONLY
     public int strStr(final String haystack, final String needle) {
-        if(haystack.isEmpty() || needle.isEmpty())
-            return -1;
-        if(haystack == null || needle == null)
+        if(needle.length() == 0 || haystack.length() == 0 || needle.length()>haystack.length())
             return -1;
         int i, j;
         int M = needle.length();
