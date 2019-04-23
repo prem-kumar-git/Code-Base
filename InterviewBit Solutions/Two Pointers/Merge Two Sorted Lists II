@@ -24,11 +24,11 @@ public class Solution {
                     j++;
                 }
             }
-            else if(i >= a.size() && j<b.size()){
+            else if(i >= a.size()){
                 c.add(b.get(j));
                 j++;
             }
-            else if(j >= b.size() && i<a.size()){
+            else if(j >= b.size()){
                 c.add(a.get(i));
                 i++;
             }
@@ -37,3 +37,4 @@ public class Solution {
         a.addAll(c);
     }
 }
+
