@@ -1,0 +1,111 @@
+Question:
+------------------------------------------------------------------------------------------------------------------------
+Two Custom Objects
+Object A
+Object B
+There is a lookup field from Object B(child) to Object A(parent). Object B has a field Amount__c. Object A has field Total_Amount__c. 
+The client has a requirement to strore the sum of amount of all Object B records under Object A record.
+
+Solution:
+-------------------------------------------------------------------------------------------------------------------------
+Trigger on B:
+----------------------------------------------------------------------------------------
+trigger BTrigger on B__c (after insert, after update, after delete, after undelete) {
+    if(trigger.isAfter){
+        if(trigger.isInsert || trigger.isUndelete){
+            BTriggerHandler.onInsert(trigger.new);
+        }
+        if(trigger.isUpdate){
+            BTriggerHandler.onUpdate(trigger.oldMap, trigger.newMap);
+        }
+        if(trigger.isDelete){
+            BTriggerHandler.onDelete(trigger.old);
+        }
+    }
+}
+
+Handler Class:
+--------------------------------------------------------------------------------------------
+public class BTriggerHandler {
+    public static void onInsert(List<B__c> bList){
+        BTriggerHelper.calculateOnInsertUndelete(bList);
+    }
+    public static void onUpdate(Map<Id,B__c> oMap, Map<Id,B__c> nMap){
+        BTriggerHelper.reCalculateOnUpdate(oMap, nMap);
+    }
+    public static void onDelete(List<B__c> bList){
+        BTriggerHelper.reCalculateOnDelete(bList);
+    }
+    public static void onUndelete(List<B__c> bList){
+        BTriggerHelper.calculateOnInsertUndelete(bList);
+    }
+}
+
+Helper Class:
+---------------------------------------------------------------------------------------------
+public class BTriggerHelper {
+	public static void calculateOnInsertUndelete(List<B__c> bList){
+        Set<Id> aObjectIdSet = new Set<Id>();
+        for(B__c b : bList)
+            aObjectIdSet.add(b.A_Object__c);
+        List<A__c> aUpdateList = new List<A__c>();
+        for(A__c a : [Select Id,Total_Amount__c, (Select Id,A_Object__c,Amount__c From B__r) From A__c Where Id in: aObjectIdSet]){
+            a.Total_Amount__c = 0;
+            for(B__c b : a.B__r){
+                a.Total_Amount__c += b.Amount__c;
+            }
+            aUpdateList.add(a);
+        }
+        try{
+            if(!aUpdateList.isEmpty())
+                update aUpdateList;
+        }
+        catch(Exception e){
+            System.debug(e.getMessage());
+        }
+    }
+    public static void reCalculateOnUpdate(Map<Id,B__c> oMap, Map<Id,B__c> nMap){
+        Set<Id> aObjectIdSet = new Set<Id>();
+        Set<Id> bObjectIdSet = new Set<Id>();
+        for(B__c b : nMap.values()){
+            if(b.Amount__c != oMap.get(b.Id).Amount__c){
+            	aObjectIdSet.add(b.A_Object__c);
+            	bObjectIdSet.add(b.Id);
+            }
+        }
+        Map<Id,A__c> aMap = new Map<Id,A__c>([Select Id,Total_Amount__c From A__c Where Id IN: aObjectIdSet]);
+        for(B__c b : [Select Id, A_Object__c, Amount__c From B__c Where Id IN: bObjectIdSet]){
+            if(aMap.get(b.A_Object__c) != null){
+                aMap.get(b.A_Object__c).Total_Amount__c -= oMap.get(b.Id).Amount__c;
+                aMap.get(b.A_Object__c).Total_Amount__c += nMap.get(b.Id).Amount__c;
+            }
+        }
+        try{
+            if(!aMap.values().isEmpty())
+                update aMap.values();
+        }
+        catch(Exception e){
+            System.debug(e.getMessage());
+        }
+    }
+    public static void reCalculateOnDelete(List<B__c> bList){
+        Set<Id> aObjectIdSet = new Set<Id>();
+        for(B__c b : bList){
+            if(b.Amount__c != 0)
+            	aObjectIdSet.add(b.A_Object__c);
+        }
+        Map<Id,A__c> aMap = new Map<Id,A__c>([Select Id,Total_Amount__c From A__c Where Id IN: aObjectIdSet]);
+        for(B__c b : bList){
+            if(aMap.get(b.A_Object__c) != null){
+                aMap.get(b.A_Object__c).Total_Amount__c -= b.Amount__c;
+            }
+        }
+        try{
+            if(!aMap.values().isEmpty())
+                update aMap.values();
+        }
+        catch(Exception e){
+            System.debug(e.getMessage());
+        }
+    }
+}
