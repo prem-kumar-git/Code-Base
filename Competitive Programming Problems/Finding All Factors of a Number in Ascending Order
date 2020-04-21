@@ -1,0 +1,29 @@
+import java.util.*;
+import java.util.Scanner;
+public class MyClass {
+    public static void main(String args[]) {
+        Scanner s = new Scanner(System.in);
+        int n = s.nextInt();
+        List<Integer> factorsList = new ArrayList<>();
+        for(int i=1; i<=Math.sqrt(n); i++){
+            if(i == Math.sqrt(n)){
+                factorsList.add(i);
+                continue;
+            }
+            if(n%i == 0){
+                factorsList.add(i);
+                factorsList.add(n/i);
+            }
+        }
+        int ctr = 0;
+        int k = 2;
+        for(int i=0; i<factorsList.size() && i>=0; i=i+k){
+            System.out.print(factorsList.get(i) + ", ");
+            if((i == factorsList.size() || i == factorsList.size()-1) && ctr==0){
+                i = (factorsList.size()%2 == 0) ? factorsList.size()-1 : factorsList.size();
+                k = -2;
+                ctr++;
+            }
+        }
+    }
+}
